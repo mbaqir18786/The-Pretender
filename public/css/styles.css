@@ -1,0 +1,514 @@
+/* Neo-Brutalist Design Tokens & Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+    --bg: #F4F0EA;
+    --border: #000000;
+    --primary: #FFD166; /* Yellow */
+    --secondary: #06D6A0; /* Green */
+    --accent: #FF6B6B; /* Red/Pink */
+    --spectator: #A1A1AA; /* Gray */
+    --light-peach: #FFE3D8;
+    --card-bg: #FFFFFF;
+    --shadow: 5px 5px 0px #000000;
+    --shadow-active: 1px 1px 0px #000000;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--border);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Common Elements */
+h1, h2, h3, h4 {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+button {
+    background-color: var(--primary);
+    color: var(--border);
+    border: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px var(--border);
+}
+
+button:active {
+    transform: translate(3px, 3px);
+    box-shadow: var(--shadow-active);
+}
+
+button:disabled {
+    background-color: #E4E4E7;
+    color: #A1A1AA;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 2px 2px 0px var(--border);
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: 3px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background-color: #FFF;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+input:focus {
+    background-color: var(--light-peach);
+}
+
+/* Notification Toast */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    width: calc(100% - 40px);
+}
+
+.toast {
+    background: var(--primary);
+    border: 3px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 12px 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    animation: slideIn 200ms ease forwards;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Layout Views */
+.view {
+    display: none;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.view.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Screen 1: Home Screen */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 30px;
+    margin-top: 5vh;
+}
+
+.hero-title-container {
+    background: var(--light-peach);
+    border: 4px solid var(--border);
+    padding: 24px 40px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transform: rotate(-1.5deg);
+}
+
+.hero-title {
+    font-size: 3rem;
+    margin-bottom: 8px;
+}
+
+.hero-tagline {
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: #4B5563;
+}
+
+.auth-card {
+    background: #FFF;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.btn-group button {
+    flex: 1;
+}
+
+/* Screen 2: Game Board (Main Hub) */
+.game-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    gap: 20px;
+    height: calc(100vh - 100px);
+    align-items: stretch;
+}
+
+/* Brutalist Sidebars / Cards */
+.card-brutal {
+    background: #FFF;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-header-brutal {
+    background: var(--primary);
+    border-bottom: 3px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body-brutal {
+    padding: 16px;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Room Info Panel */
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--light-peach);
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.room-code-display {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: #FFF;
+    border: 2px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+}
+
+.room-code-display:hover::after {
+    content: 'Copy link';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--border);
+    color: #FFF;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* Players List */
+.player-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #FFF;
+    border: 2px solid var(--border);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: all 150ms ease;
+}
+
+.player-item.is-me {
+    background: var(--light-peach);
+    border-color: var(--border);
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0px var(--border);
+}
+
+.player-item.is-host::after {
+    content: '👑';
+    margin-left: 6px;
+}
+
+.player-item.is-dead {
+    opacity: 0.5;
+    background: #F1F5F9;
+    text-decoration: line-through;
+}
+
+.player-item.is-disconnected {
+    opacity: 0.4;
+    border-style: dashed;
+    background: #F8FAFC;
+}
+
+.player-badge {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.badge-ready { background-color: var(--secondary); }
+.badge-waiting { background-color: var(--primary); }
+.badge-dead { background-color: var(--spectator); color: #FFF; }
+.badge-disconnected { background-color: #E4E4E7; color: #71717A; }
+
+/* Game Main Canvas/Arena */
+.game-arena {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #FFF;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Timer Indicator */
+.timer-banner {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: #FFF;
+    border: 3px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    box-shadow: 3px 3px 0px var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Step Panels (Lobby, Reveal, Discuss, Vote, Results) */
+.step-panel {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.step-panel.active {
+    display: flex;
+}
+
+/* Secret Reveal Card Styles */
+.secret-word-card {
+    background: var(--light-peach);
+    border: 4px solid var(--border);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    max-width: 400px;
+    width: 100%;
+    cursor: pointer;
+    transition: transform 200ms ease;
+    position: relative;
+}
+
+.secret-word-card.blurred {
+    filter: blur(4px);
+}
+
+.secret-word-card.blurred::before {
+    content: 'TAP TO REVEAL';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 227, 216, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--border);
+    border-radius: 12px;
+}
+
+.secret-word-display {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--border);
+    background: #FFF;
+    border: 3px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+/* Voting Grid */
+.voting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 10px;
+}
+
+.vote-card {
+    background: #FFF;
+    border: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 150ms ease;
+    text-align: center;
+}
+
+.vote-card:hover:not(.disabled) {
+    background: var(--light-peach);
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px var(--border);
+}
+
+.vote-card.selected {
+    background: var(--secondary) !important;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--border);
+}
+
+.vote-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Results Display */
+.eliminated-announcement {
+    background: var(--accent);
+    color: #FFF;
+    border: 3px solid var(--border);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    font-size: 1.8rem;
+    font-weight: 800;
+    max-width: 450px;
+    transform: rotate(-1.5deg);
+}
+
+/* Chat System */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #FAF8F5;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+}
+
+.chat-msg {
+    background: #FFF;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    word-break: break-word;
+}
+
+.chat-msg.system {
+    background: var(--light-peach);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.chat-msg-sender {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #4B5563;
+    margin-bottom: 2px;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.chat-input-area input {
+    padding: 10px;
+    font-size: 0.95rem;
+}
+
+.chat-input-area button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+}

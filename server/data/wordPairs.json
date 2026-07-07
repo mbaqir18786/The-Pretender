@@ -1,0 +1,21 @@
+[
+    { "normal": "Apple", "pretender": "Orange" },
+    { "normal": "Coffee", "pretender": "Tea" },
+    { "normal": "Dog", "pretender": "Cat" },
+    { "normal": "Laptop", "pretender": "Tablet" },
+    { "normal": "Gold", "pretender": "Silver" },
+    { "normal": "Chef", "pretender": "Baker" },
+    { "normal": "Doctor", "pretender": "Nurse" },
+    { "normal": "Piano", "pretender": "Guitar" },
+    { "normal": "Sun", "pretender": "Moon" },
+    { "normal": "Soccer", "pretender": "Basketball" },
+    { "normal": "Water", "pretender": "Soda" },
+    { "normal": "Pen", "pretender": "Pencil" },
+    { "normal": "Bus", "pretender": "Train" },
+    { "normal": "Summer", "pretender": "Winter" },
+    { "normal": "Movie", "pretender": "Book" },
+    { "normal": "Fork", "pretender": "Spoon" },
+    { "normal": "Guitar", "pretender": "Violin" },
+    { "normal": "Burger", "pretender": "Pizza" },
+    { "normal": "Beer", "pretender": "Wine" }
+]

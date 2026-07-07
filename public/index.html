@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pretender — Social Deduction Game</title>
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" onerror="showToast('Failed to load Socket.IO client library from CDN.')"></script>
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- MAIN VIEWS -->
+
+    <!-- VIEW 1: HOME (Create/Join) -->
+    <div id="viewHome" class="view active">
+        <div class="home-container">
+            <div class="hero-title-container">
+                <h1 class="hero-title">The Pretender</h1>
+                <p class="hero-tagline">Find the imposter who got a similar yet different secret word.</p>
+            </div>
+
+            <div class="auth-card">
+                <div>
+                    <label style="display:block; text-align:left; font-weight:700; margin-bottom:6px; font-size:0.9rem; text-transform:uppercase;">My Display Name</label>
+                    <input type="text" id="inputPlayerName" placeholder="Enter name (e.g. Agent 007)" maxlength="16">
+                </div>
+
+                <div class="btn-group">
+                    <button id="btnCreateRoom" onclick="app.createRoom()" style="background-color: var(--secondary);">Create Room</button>
+                </div>
+
+                <div style="border-top: 3px dashed var(--border); margin: 5px 0;"></div>
+
+                <div>
+                    <label style="display:block; text-align:left; font-weight:700; margin-bottom:6px; font-size:0.9rem; text-transform:uppercase;">Have a Room Code?</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="inputRoomCode" placeholder="6-digit code" maxlength="6" style="text-transform: uppercase;">
+                        <button id="btnJoinRoom" onclick="app.joinRoom()">Join</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: GAMEPLAY -->
+    <div id="viewGame" class="view">
+        <!-- Room Banner -->
+        <div class="room-header">
+            <div>
+                <h2 style="font-size: 1.1rem;">Game Room</h2>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                    <span id="roomCodeVal" class="room-code-display" onclick="app.copyRoomLink()">------</span>
+                    <span id="hostLabel" style="font-size:0.8rem; font-weight:700; background: var(--primary); padding:2px 8px; border:2px solid #000; border-radius:4px;">GUEST</span>
+                </div>
+            </div>
+            <div>
+                <button onclick="app.leaveRoom()" style="background: var(--accent); padding: 8px 16px; font-size: 0.9rem; box-shadow: 3px 3px 0px #000;">Leave Game</button>
+            </div>
+        </div>
+
+        <!-- Three Column Layout -->
+        <div class="game-layout">
+            
+            <!-- Left Panel: Players list -->
+            <div class="card-brutal">
+                <div class="card-header-brutal">
+                    <h3>Players (<span id="playerCount">0</span>)</h3>
+                </div>
+                <div class="card-body-brutal">
+                    <div id="playersList" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Players injected here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Panel: Gameplay Canvas -->
+            <div class="game-arena">
+                <!-- Sync Server Controlled Timer Banner -->
+                <div id="timerContainer" class="timer-banner" style="display:none;">
+                    ⏱️ <span id="timerCountdown">30</span>s
+                </div>
+
+                <!-- Arena State Panel 1: Lobby -->
+                <div id="panelLobby" class="step-panel active">
+                    <h2 style="font-size: 2.5rem;">The Lobby</h2>
+                    <p style="font-weight: 500; font-size: 1.1rem; max-width: 400px; color: #4B5563;">
+                        Waiting for the Host to start. Need at least 3 players (minimum recommended: 5 for Pretender dynamic mechanics).
+                    </p>
+                    <div style="margin-top:15px; display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px;">
+                        <button id="btnStartGame" onclick="game.requestStartGame()" style="display:none; width: 100%;">Start Game 🚀</button>
+                        <div id="hostWaitMessage" style="font-weight: 700; color: var(--accent);">Waiting for Host to start...</div>
+                    </div>
+                </div>
+
+                <!-- Arena State Panel 2: Secret Reveal Screen -->
+                <div id="panelSecretReveal" class="step-panel">
+                    <h2>Your Word Assignment</h2>
+                    <p style="font-size:1rem; font-weight:500; color: #4B5563;">Keep your card hidden! Tap the card to view your word, then click "I'M READY".</p>
+                    
+                    <div id="secretWordCard" class="secret-word-card blurred" onclick="game.toggleSecretBlur()">
+                        <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #6B7280; letter-spacing: 1px;">Secret Designation</div>
+                        <div id="secretRoleBadge" style="display:inline-block; margin-top:5px; font-size: 0.9rem; font-weight: 700; background: var(--primary); padding: 2px 8px; border:2px solid #000; border-radius:4px;">ASSIGNING...</div>
+                        <div id="secretWordDisplay" class="secret-word-display">------</div>
+                    </div>
+
+                    <button id="btnReadyUp" onclick="game.readyUp()" style="background-color: var(--secondary); width:100%; max-width:200px;">I'm Ready</button>
+                    <p id="readyStatusText" style="font-weight: 700; font-size: 0.95rem; color: var(--secondary); display: none;">✓ Ready! Waiting for others...</p>
+                </div>
+
+                <!-- Arena State Panel 3: Discussion Screen -->
+                <div id="panelDiscussion" class="step-panel">
+                    <div style="font-size: 4rem;">💬</div>
+                    <h2>Discussion Round</h2>
+                    <p style="font-size: 1.1rem; font-weight: 500; color:#4B5563; max-width: 450px;">
+                        Talk with other players using the chat room on the right. Formulate questions to reveal the pretender without exposing your secret word!
+                    </p>
+                    <div id="discussPrompt" style="background:var(--light-peach); border:3px solid #000; border-radius:8px; padding:12px; font-weight:700; font-size:1.1rem;">
+                        Remember: The pretender has a different but related word.
+                    </div>
+                </div>
+
+                <!-- Arena State Panel 4: Voting Screen -->
+                <div id="panelVoting" class="step-panel">
+                    <h2>Cast Your Vote</h2>
+                    <p style="font-size:1rem; font-weight:500; color: #4B5563;">Who is "The Pretender"? Choose a player to eliminate. You cannot vote for yourself.</p>
+                    
+                    <div id="votingGrid" class="voting-grid">
+                        <!-- Inject vote cards here -->
+                    </div>
+                    
+                    <p id="voteStatusText" style="font-weight: 700; font-size: 1rem; color: var(--secondary); display:none;">Vote Recorded!</p>
+                </div>
+
+                <!-- Arena State Panel 5: Results Screen -->
+                <div id="panelResults" class="step-panel">
+                    <h2>Round Elimination</h2>
+                    
+                    <div id="eliminatedResultBox" class="eliminated-announcement">
+                        ...
+                    </div>
+
+                    <p style="font-size: 1rem; font-weight: 500; color: #4B5563; margin-top:10px;">The identity of the eliminated player is kept secret until the final reveal.</p>
+                </div>
+
+                <!-- Arena State Panel 6: Game Over / Winner Screen -->
+                <div id="panelGameOver" class="step-panel">
+                    <div style="font-size: 4.5rem;">🏆</div>
+                    <h2 id="winTitle" style="font-size: 2.2rem; color: var(--accent);">WINNER!</h2>
+                    
+                    <div style="background: #F8FAFC; border:3px solid #000; padding:15px; border-radius:12px; width:100%; max-width:450px; text-align:left; display:flex; flex-direction:column; gap:10px;">
+                        <h4 style="border-bottom:2px solid #000; padding-bottom:4px; font-size:0.9rem;">Revealing Assignments:</h4>
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>Normal Word:</span>
+                            <span id="endNormalWord" style="background:var(--secondary); padding:2px 8px; border:2px solid #000; border-radius:4px;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>Pretender Word:</span>
+                            <span id="endPretenderWord" style="background:var(--primary); padding:2px 8px; border:2px solid #000; border-radius:4px;">-</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
+                            <span style="font-weight:800; font-size:0.85rem; text-transform:uppercase;">The Pretenders:</span>
+                            <div id="endPretenderList" style="display:flex; flex-wrap:wrap; gap:6px;">
+                                <!-- Names -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnPlayAgain" onclick="game.playAgain()" style="display:none; background-color: var(--secondary); width: 100%; max-width:250px;">Play Again</button>
+                </div>
+
+            </div>
+
+            <!-- Right Panel: Global / Room Chat -->
+            <div class="card-brutal">
+                <div class="card-header-brutal" style="background-color: var(--light-peach);">
+                    <h3>Live Chat</h3>
+                </div>
+                <div class="chat-container">
+                    <div id="chatMessages" class="chat-messages">
+                        <div class="chat-msg system">Welcome to The Pretender. Chat here when round discussion starts!</div>
+                    </div>
+                    <div class="chat-input-area" style="padding: 10px;">
+                        <input type="text" id="chatInput" placeholder="Send a message..." onkeydown="chat.handleChatKey(event)">
+                        <button id="btnSendChat" onclick="chat.sendChatMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JS Modules -->
+    <script src="js/utils.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/vote.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+/* Responsive Breakpoints */
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        height: auto;
+        gap: 15px;
+    }
+
+    .room-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .chat-messages {
+        height: 200px;
+    }
+}
