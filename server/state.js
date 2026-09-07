@@ -18,6 +18,10 @@ function saveState() {
             rooms: state.rooms,
             activeCodes: Array.from(state.activeCodes)
         };
+        const dir = path.dirname(STATE_FILE);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
         fs.writeFileSync(STATE_FILE, JSON.stringify(dataToSave), 'utf-8');
     } catch (err) {
         logger.error('State', 'Failed to save server state', err);

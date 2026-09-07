@@ -14,8 +14,13 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
 
-    <!-- Socket.IO Client CDN -->
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" onerror="showToast('Failed to load Socket.IO client library from CDN.')"></script>
+    <!-- Socket.IO Client (CDN with local fallback) -->
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script>
+        if (typeof io === 'undefined') {
+            document.write('<script src="/socket.io/socket.io.js"><\/script>');
+        }
+    </script>
 </head>
 <body>
 

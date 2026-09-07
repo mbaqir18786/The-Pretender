@@ -3,15 +3,27 @@ let socket = null;
 const socketHandler = {
     init: function() {
         if (typeof io === 'undefined') {
-            showToast("Socket.IO not loaded.");
+            if (typeof showToast === 'function') {
+                showToast("Socket.IO not loaded. Please refresh.");
+            }
+            console.error("Socket.IO client library is not loaded.");
             return;
         }
 
-        socket = io();
+        // Auto-detect server URL (supports direct localhost:3000, Live Server on port 5500, or deployed cloud URLs)
+        let serverUrl = undefined;
+        if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000' && (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'))) {
+            serverUrl = 'http://localhost:3000';
+        }
+
+        socket = serverUrl ? io(serverUrl) : io();
 
         socket.on('connect', () => {
             console.log('Connected to server');
-            // Reconnect flow handled in app.js if needed
+        });
+
+        socket.on('connect_error', (err) => {
+            console.warn('Socket connection error:', err.message);
         });
 
         socket.on('UPDATE_ROOM_STATE', (serverState) => {
